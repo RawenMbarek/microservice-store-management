@@ -3,10 +3,7 @@ package tn.esb.siad.productApi.Entities;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 @Getter
@@ -22,6 +19,7 @@ public class Product {
     private Long id;
     @NonNull
     @EqualsAndHashCode.Include
+    @Column(unique = true, nullable=false)
     private String name;
     @NonNull
     private BigDecimal price;
