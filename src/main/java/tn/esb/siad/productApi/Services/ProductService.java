@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import tn.esb.siad.productApi.Entities.Product;
 import tn.esb.siad.productApi.Repositories.ProductRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,7 +43,43 @@ public class ProductService {
          return new ResponseEntity<>(res.get(), HttpStatus.OK);
 
     }
-    //findAllProducts
+    public ResponseEntity<?> findAllProducts()
+    {
+        List<Product> lstProducts=repository.findAll();
+        if(lstProducts.isEmpty())
+            return new ResponseEntity<>("There are no products in the stock", HttpStatus.NO_CONTENT);
+       // return new ResponseEntity<>(lstProducts, HttpStatus.OK);
+        //or
+       // return ResponseEntity.ok(lstProducts);
+        return ResponseEntity.status(HttpStatus.OK).body(lstProducts);
+    }
     //find expired Products
-    //delete and update a product by id
+    public ResponseEntity<?> findExpiredProducts()
+    {
+        List<Product> lstExpiredProducts=repository.findAll().stream()
+                .filter(p->p.getExpirationDate().isBefore(LocalDate.now()))
+                .collect(Collectors.toList());
+        if(lstExpiredProducts.isEmpty())
+            return new ResponseEntity<>("There are no expired products", HttpStatus.NO_CONTENT);
+
+        return ResponseEntity.status(HttpStatus.OK).body(lstExpiredProducts);
+
+    }
+    //delete a product by id
+    public ResponseEntity<?> deleteProductById(Long productId)
+    {
+        Optional<Product> res=repository.findById(productId);
+        if(res.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("There is no product with id = " + productId);
+        repository.deleteById(productId);
+        return ResponseEntity.ok("The product with id = " + productId+" was deleted successfully");
+    }
+    //update a product by id
+    public ResponseEntity<?> updateProductById(Long productId, Product newProduct)
+    {
+        Optional<Product> res=repository.findById(productId);
+        if(res.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("There is no product with id = " + productId);
+        return ResponseEntity.ok(repository.save(newProduct));
+    }
 }
