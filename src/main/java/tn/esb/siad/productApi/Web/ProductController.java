@@ -27,7 +27,7 @@ public class ProductController {
     public ResponseEntity<?> getProduct(@PathVariable Long id)
     {return service.getProduct(id);}
     @PostMapping("/add")
-    public Product addOneProduct(@Valid @RequestBody Product product) //add @Valid
+    public ResponseEntity<?> addOneProduct(@Valid @RequestBody Product product) //add @Valid
     {return service.addProduct(product);}
     @GetMapping("/expired")
     public ResponseEntity<?> getExpiredProducts()
