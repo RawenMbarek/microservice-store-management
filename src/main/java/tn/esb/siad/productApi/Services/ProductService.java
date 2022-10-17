@@ -84,6 +84,7 @@ public class ProductService {
         Optional<Product> res=repository.findById(productId);
         if(res.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("There is no product with id = " + productId);
+        newProduct.setId(productId);
         return ResponseEntity.ok(repository.save(newProduct));
     }
 }
