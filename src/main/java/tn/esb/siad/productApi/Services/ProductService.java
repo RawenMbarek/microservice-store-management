@@ -17,22 +17,26 @@ public class ProductService {
     @Autowired
     private ProductRepository repository;
 
-    public Product addProduct(Product product) {
+    public ResponseEntity<?> addProduct(Product product) {
 
         List<Product> allProducts=repository.findAll();
         //verify if the product already exists
         List<Product> lstRes=allProducts.stream() //convert from List<Product> to Stream<Product>
                 .filter(p->p.equals(product)) //returns the product p if it exists, if not return nothing
                 .collect(Collectors.toList());
+        Product pRes;
         if(!lstRes.isEmpty()) //the product already exists
         {
             Product p=lstRes.get(0);//the attribute name is unique
             //update the stock
             p.setStock(p.getStock()+product.getStock());
-           return repository.save(p);
+           pRes=repository.save(p);
+            return ResponseEntity.status(HttpStatus.OK).body(pRes);
+
         }
 
-        return repository.save(product);
+        pRes= repository.save(product);
+        return ResponseEntity.status(HttpStatus.CREATED).body(pRes);
     }
 
     public ResponseEntity<Product> getProduct(Long id)
